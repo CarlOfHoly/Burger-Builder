@@ -59,27 +59,47 @@ class ContactData extends Component {
       }
     },
     loading: false
+  }
+
+  orderHandler = (event) => {
+    event.preventDefault();
+    this.setState({ loading: true });
+    const formData = {};
+
+    for (let formElementIdentifier in this.state.orderForm) {
+      formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+    }
+
+    const order = {
+      ingredients: this.props.ingredients,
+      price: Number(this.props.price),
+      orderData: formData
+    }
+
+    axios.post("/orders.json", order)
+      .then(response => {
+        console.log(response);
+        console.log(this.props.history);
+        this.setState({ loading: false });
+        this.props.history.push('/');
+      })
+      .catch(error => {
+        this.setState({ loading: false });
+    } );
   };
 
-  // orderHandler = event => {
-  //   event.preventDefault();
-  //   console.log(this.props.ingredients);
-
-  //   this.setState({ loading: true });
-
-  //   const order = {
-  //     ingredients: this.props.ingredients,
-  //     price: this.props.price.
-  //   axios
-  //     .post("/orders.json", order)
-  //     .then(response => {
-  //       console.log(response);
-  //       console.log(this.props.history);
-  //       this.setState({ loading: false });
-  //       this.props.history.push('/');
-  //     })
-  //     .catch(error => this.setState({ loading: false }));
-  // };
+  inputChangedHandler = (event, inputIdentifier) => {
+    const updatedOrderForm = {
+      ...this.state.orderForm
+    }
+    const updatedFormElement = {
+      ...updatedOrderForm[inputIdentifier]
+    };
+    updatedFormElement.value = event.target.value;
+    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    console.log(updatedOrderForm);
+    this.setState({orderForm: updatedOrderForm});
+  }
 
   render() {
     const formElementsArray = [];
@@ -91,15 +111,16 @@ class ContactData extends Component {
     }
 
     let form = (
-      <form>
+      <form onSubmit={this.orderHandler}>
         {formElementsArray.map(formElement => (
           <Input 
           key={formElement.id}
           elementType={formElement.config.elementType}
           elementConfig={formElement.config.elementConfig}
-            value={formElement.config.value}/>
+          value={formElement.config.value}
+          changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
         ))}
-        <Button btnType="Success" clicked={this.orderHandler}>
+        <Button btnType="Success">
           ORDER NOW
         </Button>
       </form>
