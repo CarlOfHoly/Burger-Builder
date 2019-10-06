@@ -7,11 +7,11 @@ import { withRouter } from 'react-router-dom';
 
 class ContactData extends Component {
   state = {
-    name: "",
-    email: "",
+    name: '',
+    email: '',
     address: {
-      street: "",
-      zipCode: ""
+      street: '',
+      zipCode: ''
     },
     loading: false
   };
