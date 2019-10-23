@@ -1,9 +1,9 @@
-## Available Scripts
-
 To run the project:  
 - Clone the repo  
 - cd into burger-app
 - Then run
+
+### `npm init`
 
 ### `npm start`
 
